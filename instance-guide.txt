@@ -451,3 +451,44 @@ resource "openstack_compute_interface_attach_v2" "adm_mgmt_attach" {
    instance_id = data.openstack_compute_instance_v2.cloud_adm.id # Используем полученный ID
    port_id = openstack_networking_port_v2.adm_mgmt_port.id
 }
+# Создание балансировщика нагрузки
+
+resource "openstack_lb_loadbalancer_v2" "cloud_lb" {
+
+name = "cloud-lb"
+
+vip_subnet_id = openstack_networking_subnet_v2.external_subnet.id
+
+vip_address = "172.16.1.1"
+
+}
+
+resource "openstack_lb_listener_v2" "http_listener" {
+name = "http-listener"
+protocol = "HTTP"
+protocol_port = 80
+loadbalancer_id = openstack_lb_loadbalancer_v2.cloud_lb.id
+}
+
+resource "openstack_lb_pool_v2" "http_pool" {
+name = "http-pool"
+protocol = "HTTP"
+lb_method = "ROUND_ROBIN"
+listener_id = openstack_lb_listener_v2.http_listener.id
+}
+
+resource "openstack_lb_member_v2" "ha01_member" {
+pool_id = openstack_lb_pool_v2.http_pool.id
+address = "172.16.1.2"
+protocol_port = 80
+subnet_id = openstack_networking_subnet_v2.external_subnet.id
+}
+resource "openstack_lb_monitor_v2" "health_monitor" {
+name = "http-monitor"
+pool_id = openstack_lb_pool_v2.http_pool.id
+type = "HTTP"
+delay = 5
+timeout = 3
+max_retries = 3
+url_path = "/"
+}
