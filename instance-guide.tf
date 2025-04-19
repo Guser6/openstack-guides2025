@@ -434,3 +434,20 @@ resource "openstack_networking_port_v2" "BACKUP02_port2" {
     ip_address = "192.168.10.74"  # Измененный уникальный IP
   }
 }
+# adm.tf
+data "openstack_compute_instance_v2" "cloud_adm" {
+id = "7a342e81-f13d-4426-8311-b8c7957819f3"
+}
+resource "openstack_networking_port_v2" "adm_mgmt_port" {
+   name = "adm-mgmt-port"
+   network_id = openstack_networking_network_v2.management_net.id
+   admin_state_up = "true"
+fixed_ip {
+   subnet_id = openstack_networking_subnet_v2.management_subnet.id
+   ip_address = "192.168.10.72"
+}
+}
+resource "openstack_compute_interface_attach_v2" "adm_mgmt_attach" {
+   instance_id = data.openstack_compute_instance_v2.cloud_adm.id # Используем полученный ID
+   port_id = openstack_networking_port_v2.adm_mgmt_port.id
+}
