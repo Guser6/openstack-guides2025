@@ -1,4 +1,5 @@
 # Создание виртуальных машин
+'''hcl
 resource "openstack_compute_instance_v2" "Cloud_HA01" {
   name            = "имя_машины"
   image_id        = "id или название образа" 
