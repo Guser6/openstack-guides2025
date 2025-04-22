@@ -1,4 +1,5 @@
 # получение данных о существующих сетях
+``` hcl
 data "openstack_networking_network_v2" "имя сети" {
 name = "имя сети"
 }
