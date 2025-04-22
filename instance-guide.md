@@ -30,3 +30,7 @@ resource "openstack_networking_port_v2" "название" {
   network {
     port = openstack_networking_port_v2.название_порта.id
   }
+# Добавление информации о существующих ВМ
+data "openstack_compute_instance_v2" "название_ВМ" {
+id = "ID_виртуальной_машины"
+}
