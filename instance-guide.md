@@ -8,19 +8,7 @@ resource "openstack_compute_instance_v2" "Cloud_HA01" {
   key_pair        = "название или id ключевой пары для доступа к ВМ"
   security_groups = ["название группы безопасности"]
 ```
-# изменение размера диска ВМ
-в случае ессли виртуальной машине необходимо изменить размер дискового пространства.
-```
-  block_device {
-    uuid                  = "идентификатор образа"
-    source_type           = "image"
-    destination_type      = "volume"
-    volume_size           = "указываем необходимый размер дискового пространства"
-    boot_index            = 0
-    delete_on_termination = true
-  }
-```
-# создание сетевых интерфейсов и подключение из к ВМ
+# создание сетевых интерфейсов и подключение их к ВМ
 ```
 resource "openstack_networking_port_v2" "название" {
   name           = "название_порта"
